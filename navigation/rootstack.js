@@ -27,40 +27,37 @@ import DamilagContact from '../component/damilagcontactpage/DamilagContact';
 import Tricab from '../component/Transpopage/triCab';
 import MultiCab from '../component/Transpopage/multiCab';
 import Habal from '../component/Transpopage/habal';
-
-
-
+import BarangayDamilag from '../component/brgydamilagpage/BarangayDamilagInfo';
 
 const { primary, tertiary } = Colors;
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const FavoritesStack = () => {
-  const [favorites, setFavorites] = useState([]); // Manage the favorites list state
+  const [favorites, setFavorites] = useState([]);
 
-  // Function to add a favorite
   const addToFavorites = (place) => {
     setFavorites((prevFavorites) => {
       if (!prevFavorites.some((fav) => fav.name === place.name)) {
-        return [...prevFavorites, place]; // Add only if not already in favorites
+        return [...prevFavorites, place];
       }
-      return prevFavorites; // No duplicates
+      return prevFavorites;
     });
   };
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {/* Pass addToFavorites to BusinessDetails */}
-      <Stack.Screen
-        name="FavoritesList"
-        component={FavoritesScreen}
-        initialParams={{ favorites, addToFavorites }}
-      />
-      <Stack.Screen
-        name="BusinessDetails"
-        component={BusinessDetails}
-        initialParams={{ addToFavorites }} // Pass function here
-      />
+      {/* Pass props via children */}
+      <Stack.Screen name="FavoritesList">
+        {(props) => (
+          <FavoritesScreen {...props} addToFavorites={addToFavorites} favorites={favorites} />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="BusinessDetails">
+        {(props) => (
+          <BusinessDetails {...props} addToFavorites={addToFavorites} />
+        )}
+      </Stack.Screen>
       <Stack.Screen name="ContactUs" component={ContactUs} />
       <Stack.Screen name="Guidelines" component={GuidelinesPage} />
       <Stack.Screen name="Prices" component={Prices} />
@@ -88,159 +85,55 @@ const RootStack = () => {
       >
         {/* Authentication Screens */}
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen
-          name="LoginScreen"
-          component={LoginScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="SignUpScreen"
-          component={SignUpScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="WelcomeScreen"
-          component={WelcomeScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{ headerShown: false }} />
 
         {/* Main Navigation */}
-        <Stack.Screen
-          name="HomeStack"
-          component={NavBar}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="BrgyOfficials"
-          component={BrgyOfficials}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="DamilagAwards"
-          component={DamilagAwards}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="DamilagGuidelines"
-          component={DamilagGuidelines}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="DamilagContact"
-          component={DamilagContact}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="BusinessDetails"
-          component={BusinessDetails}
-          options={{
-            headerShown: false,
-          }}
-      />
-        <Stack.Screen
-          name="Prices"
-          component={Prices}
-          options={{
-            headerShown: false,
-          }}
-      />
-      <Stack.Screen
-          name="Guidelines"
-          component={GuidelinesPage}
-          options={{
-            headerShown: false,
-          }}
-      />
-       <Stack.Screen
-          name="ContactUs"
-          component={ContactUs}
-          options={{
-            headerShown: false,
-          }}
-      />
-        <Stack.Screen
-        name="Tricab"
-        component={Tricab}
-        options={{
-          headerShown: false,
-        }}
-        />
-        <Stack.Screen
-        name="Multicab"
-        component={MultiCab}
-        options={{
-          headerShown: false,
-        }}
-        />
-        <Stack.Screen
-        name="Habal"
-        component={Habal}
-        options={{
-          headerShown: false,
-        }}
-        />
-    
-      
+        <Stack.Screen name="HomeStack" component={NavBar} options={{ headerShown: false }} />
+        <Stack.Screen name="BrgyOfficials" component={BrgyOfficials} options={{ headerShown: false }} />
+        <Stack.Screen name="DamilagAwards" component={DamilagAwards} options={{ headerShown: false }} />
+        <Stack.Screen name="DamilagGuidelines" component={DamilagGuidelines} options={{ headerShown: false }} />
+        <Stack.Screen name="DamilagContact" component={DamilagContact} options={{ headerShown: false }} />
+        <Stack.Screen name="BusinessDetails" component={BusinessDetails} options={{ headerShown: false }} />
+        <Stack.Screen name="Prices" component={Prices} options={{ headerShown: false }} />
+        <Stack.Screen name="Guidelines" component={GuidelinesPage} options={{ headerShown: false }} />
+        <Stack.Screen name="ContactUs" component={ContactUs} options={{ headerShown: false }} />
+        <Stack.Screen name="Tricab" component={Tricab} options={{ headerShown: false }} />
+        <Stack.Screen name="Multicab" component={MultiCab} options={{ headerShown: false }} />
+        <Stack.Screen name="Habal" component={Habal} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
 
-
 const NavBar = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
-  const toggleMenu = () => {
-    setMenuOpen(!isMenuOpen);
-  };
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
 
   return (
     <View style={{ flex: 1 }}>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
-            let iconName;
-
-            if (route.name === 'Home') {
-              iconName = 'home';
-            } else if (route.name === 'Explore') {
-              iconName = 'compass';
-            } else if (route.name === 'Favorites') {
-              iconName = 'heart';
-            } else if (route.name === 'My Account') {
-              iconName = 'user';
-            }
-
+            const iconName = {
+              Home: 'home',
+              Explore: 'compass',
+              Favorites: 'heart',
+              'My Account': 'user',
+            }[route.name];
             return <FontAwesome name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: 'white',
-          tabBarInactiveTintColor: 'black',
-          tabBarStyle: {
-            backgroundColor: '#4CAF50',
-            paddingVertical: 10,
-          },
+          tabBarActiveTintColor: '#FFFFFF',
+          tabBarInactiveTintColor: '#D3D3D3',
+          tabBarStyle: { backgroundColor: '#28a745', paddingVertical: 10 },
           headerShown: false,
         })}
       >
         <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="Explore" component={ExploreScreen} />
         <Tab.Screen name="Favorites" component={FavoritesStack} />
+        <Tab.Screen name="Explore" component={BarangayDamilag} />
         <Tab.Screen name="My Account" component={MyAccountScreen} />
       </Tab.Navigator>
 

@@ -7,6 +7,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import app from '../../src/config/firebase';
 import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 
+
 const { width } = Dimensions.get('window');
 const scaleFont = (size) => (width / 375) * size;
 
@@ -105,38 +106,41 @@ const HomeScreen = () => {
         </View>
 
         {/* Dynamic Business Sections */}
-        {Object.keys(groupedBusinesses).map((type) => (
-          <View key={type}>
-            <Text style={styles.sectionTitle}>{type.toUpperCase()}</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScrollView}>
-              {groupedBusinesses[type]
-                .filter((business) =>
-                  business.businessName?.toLowerCase().includes(searchQuery.toLowerCase())
-                )
-                .map((business) => (
-                  <TouchableOpacity
-                    key={business.id}
-                    style={styles.card}
-                    onPress={() => navigation.navigate('BusinessDetails', { business })}
-                  >
-                    <Image
-                      source={{ uri: business.profilePicture || 'https://via.placeholder.com/150' }}
-                      style={styles.cardImage}
-                    />
-                    <Text style={styles.cardTitle}>{business.businessName || 'Unnamed Business'}</Text>
-                    <Text style={styles.cardSubtitle}>{business.location || 'Unknown Location'}</Text>
-                  </TouchableOpacity>
-                ))}
-            </ScrollView>
-          </View>
-        ))}
+        {Object.keys(groupedBusinesses)
+  .filter((type) => type !== 'Other') // Exclude the "Other" section
+  .map((type) => (
+    <View key={type}>
+      <Text style={styles.sectionTitle}>{type.toUpperCase()}</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScrollView}>
+        {groupedBusinesses[type]
+          .filter((business) =>
+            business.businessName?.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+          .map((business) => (
+            <TouchableOpacity
+              key={business.id}
+              style={styles.card}
+              onPress={() => navigation.navigate('BusinessDetails', { business })}
+            >
+              <Image
+                source={{ uri: business.profilePicture || 'https://via.placeholder.com/150' }}
+                style={styles.cardImage}
+              />
+              <Text style={styles.cardTitle}>{business.businessName || 'Unnamed Business'}</Text>
+              <Text style={styles.cardSubtitle}>{business.location || 'Unknown Location'}</Text>
+            </TouchableOpacity>
+          ))}
+      </ScrollView>
+    </View>
+  ))}
+
 
                       {/* Transportation Section */}
           <Text style={styles.sectionTitle}>Transportation</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScrollView}>
             <TouchableOpacity
               style={styles.card}
-              onPress={() => navigation.navigate('Tricab', { place: { name: 'Tric-cab', location: 'Main Road', image: 'https://your-tricab-image-url.com' } })}
+              onPress={() => navigation.navigate('Tricab', { place: { name: 'Bajaj re', location: 'Main Road', image: 'https://your-tricab-image-url.com' } })}
             >
               <Image source={require('../../assets/bao.png')} style={styles.cardImage} />
               <Text style={styles.cardTitle}>Tric-cab</Text>
@@ -159,20 +163,6 @@ const HomeScreen = () => {
               <Text style={styles.cardSubtitle}>Village Path</Text>
             </TouchableOpacity>
           </ScrollView>
-
-        {/* Footer Section */}
-        <View style={styles.footerContainer}>
-          <Text style={styles.footerText}>Cultural Guidelines</Text>
-          <Text style={styles.footerDescription}>
-            Visiting Damilag soon? Understanding basic language, religion, social etiquette, customs, protocols, and work culture is a must.
-          </Text>
-          <TouchableOpacity
-            style={styles.footerButton}
-            onPress={() => navigation.navigate('BarangayDamilag')}
-          >
-            <Text style={styles.footerButtonText}>Read more</Text>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
     </View>
   );
@@ -247,12 +237,13 @@ const styles = StyleSheet.create({
   horizontalScrollView: {
     marginBottom: 20,
   },
-  card: {
+    card: { 
     width: width * 0.4,
     marginRight: 10,
     backgroundColor: 'white',
     borderRadius: 10,
     overflow: 'hidden',
+    marginBottom: 'auto'
   },
   cardImage: {
     width: '100%',
@@ -268,33 +259,6 @@ const styles = StyleSheet.create({
     color: 'gray',
     marginHorizontal: 5,
     marginBottom: 5,
-  },
-  footerContainer: {
-    marginVertical: 20,
-    padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-  },
-  footerText: {
-    fontSize: scaleFont(18),
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  footerDescription: {
-    fontSize: scaleFont(16),
-    color: 'gray',
-    marginBottom: 20,
-  },
-  footerButton: {
-    backgroundColor: '#32a852',
-    paddingVertical: 10,
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  footerButtonText: {
-    color: 'white',
-    fontSize: scaleFont(16),
-    fontWeight: 'bold',
   },
 });
 

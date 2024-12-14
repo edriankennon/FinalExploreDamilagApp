@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#4CAF50',
-    padding: 30,
+    padding: 25,
     
   },
   headerTitle: {
@@ -337,6 +337,7 @@ const styles = StyleSheet.create({
   profileContainer: {
     alignItems: 'center',
     marginBottom: 20,
+    marginTop:20,
   },
   profileImage: {
     width: 150,
@@ -356,6 +357,8 @@ const styles = StyleSheet.create({
   fieldsContainer: {
     width: '90%',
     marginTop: 10,
+    marginLeft: 20,
+    
   },
   fieldRow: {
     flexDirection: 'row',

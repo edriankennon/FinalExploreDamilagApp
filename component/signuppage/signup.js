@@ -171,7 +171,7 @@ const SignUpScreen = () => {
   
       {/* Username */}
       <View style={styles.inputGroup}>
-        <FontAwesome name="user" size={20} color="green" style={styles.icon} />
+        <FontAwesome name="user" size={20} color="#28a745" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Username"
@@ -182,7 +182,7 @@ const SignUpScreen = () => {
   
       {/* Email */}
       <View style={styles.inputGroup}>
-        <FontAwesome name="envelope" size={20} color="green" style={styles.icon} />
+        <FontAwesome name="envelope" size={20} color="#28a745" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Email address"
@@ -194,7 +194,7 @@ const SignUpScreen = () => {
   
       {/* Password */}
       <View style={styles.inputGroup}>
-        <FontAwesome name="lock" size={20} color="green" style={styles.icon} />
+        <FontAwesome name="lock" size={20} color="#28a745" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Password"
@@ -215,7 +215,7 @@ const SignUpScreen = () => {
       {/* Role */}
       <Text style={styles.label}>Role</Text>
       <TouchableOpacity style={styles.pickerContainer} onPress={() => setRolePickerVisible(true)}>
-        <FontAwesome name="user" size={20} color="green" style={styles.icon} />
+        <FontAwesome name="user" size={20} color="#28a745" style={styles.icon} />
         <Text style={styles.pickerText}>{role || 'Select Role'}</Text>
         <Entypo name="chevron-down" size={20} color="grey" style={styles.iconRight} />
       </TouchableOpacity>
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   signUpButton: {
-    backgroundColor: 'green',
+    backgroundColor: '#28a745',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
   },
   loginLink: {
     fontSize: 16,
-    color: 'green',
+    color: '#28a745',
     fontWeight: 'bold',
   },
   imagePreviewContainer: {

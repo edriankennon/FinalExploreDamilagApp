@@ -1,10 +1,36 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { CommonActions } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import app from '../src/config/firebase';
 
 const SideMenu = ({ toggleMenu }) => {
   const navigation = useNavigation();
+  const [profilePicture, setProfilePicture] = useState('https://via.placeholder.com/100'); // Default placeholder
+
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const userDoc = doc(db, 'users', user.uid); // Fetch user document
+          const docSnap = await getDoc(userDoc);
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            setProfilePicture(userData.profilePicture || 'https://via.placeholder.com/100'); // Set profile picture from Firestore
+          } else {
+            console.log('No user data found in Firestore!');
+          }
+        }
+      });
+    };
+
+    fetchUserProfile();
+  }, []);
 
   return (
     <View style={StyleSheet.absoluteFill}>
@@ -17,7 +43,15 @@ const SideMenu = ({ toggleMenu }) => {
 
       {/* Side Menu */}
       <View style={styles.sideMenu}>
-        <TouchableOpacity onPress={toggleMenu} />
+        {/* Profile Section */}
+        <View style={styles.profileContainer}>
+          <Image
+            source={{ uri: profilePicture }}
+            style={styles.profileImage}
+          />
+        </View>
+
+        {/* Menu Items */}
         <View style={styles.menuItems}>
           <TouchableOpacity
             style={styles.menuItem}
@@ -27,12 +61,6 @@ const SideMenu = ({ toggleMenu }) => {
             }}
           >
             <Text style={styles.menuText}>My Account 👤</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
-            <Text style={styles.menuText}>Share 🔗</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
-            <Text style={styles.menuText}>Help & Support ❓</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem}>
             <Text style={styles.menuText}>Settings ⚙️</Text>
@@ -49,7 +77,7 @@ const SideMenu = ({ toggleMenu }) => {
               );
             }}
           >
-            <Text style={styles.menuText}>Sign out 🚪</Text>
+            <Text style={styles.menuSignout}>Sign out 🚪</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -73,12 +101,21 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     zIndex: 102, // Ensure it appears above other content
   },
-  closeButtonText: {
-    color: 'white',
-    fontSize: 24,
+  profileContainer: {
+    alignItems: 'left',
+    marginBottom: 10, 
+    marginTop: 40,
+  },
+  profileImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30, 
+    borderWidth: 1,
+    borderColor: 'green', 
+    
   },
   menuItems: {
-    marginTop: 80,
+    marginTop: 20,
   },
   menuItem: {
     marginVertical: 20,
@@ -89,6 +126,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     marginLeft: 10,
+  },
+  menuSignout: {
+    color: 'white',
+    fontSize: 18,
+    marginLeft: 10,
+    marginTop: 500,
   },
 });
 

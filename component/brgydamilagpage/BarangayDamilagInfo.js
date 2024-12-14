@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import {View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Modal,} from 'react-native';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 const BarangayDamilag = () => {
   const navigation = useNavigation();
   const [showFullText, setShowFullText] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   const photos = [
     require('../../assets/stage.png'),
@@ -16,6 +18,16 @@ const BarangayDamilag = () => {
 
   const toggleReadMore = () => {
     setShowFullText(!showFullText);
+  };
+
+  const openModal = (photo) => {
+    setSelectedPhoto(photo);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setSelectedPhoto(null);
   };
 
   return (
@@ -29,15 +41,6 @@ const BarangayDamilag = () => {
       <View style={styles.titleContainer}>
         <Text style={styles.headerText}>Barangay Damilag</Text>
         <Text style={styles.subHeaderText}>Manolo Fortich, Bukidnon</Text>
-
-        {/* Star Ratings */}
-        <View style={styles.ratingContainer}>
-          <FontAwesome name="star" size={25} color="gold" />
-          <FontAwesome name="star" size={25} color="gold" />
-          <FontAwesome name="star" size={25} color="gold" />
-          <FontAwesome name="star" size={25} color="gold" />
-          <FontAwesome name="star" size={25} color="white" />
-        </View>
 
         {/* Address */}
         <View style={styles.addressContainer}>
@@ -90,11 +93,25 @@ const BarangayDamilag = () => {
       <Text style={styles.photosTitle}>Photos</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.photoScrollView}>
         {photos.map((photo, index) => (
-          <View key={index} style={styles.photoFrame}>
-            <Image source={photo} style={styles.photo} />
-          </View>
+          <TouchableOpacity key={index} onPress={() => openModal(photo)}>
+            <View style={styles.photoFrame}>
+              <Image source={photo} style={styles.photo} />
+            </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
+
+      {/* Full-Screen Modal */}
+      {modalVisible && (
+        <Modal transparent={true} visible={modalVisible} animationType="fade">
+          <View style={styles.modalContainer}>
+            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+            <Ionicons name="close" size={32} color="white" />
+            </TouchableOpacity>
+            {selectedPhoto && <Image source={selectedPhoto} style={styles.modalImage} />}
+          </View>
+        </Modal>
+      )}
     </ScrollView>
   );
 };
@@ -124,14 +141,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   subHeaderText: {
+    marginTop: 5,
     fontSize: 18,
     color: '#666',
     textAlign: 'center',
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 10,
   },
   addressContainer: {
     flexDirection: 'row',
@@ -149,6 +162,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
+    marginTop: 10,
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
@@ -207,18 +221,13 @@ const styles = StyleSheet.create({
   photoScrollView: {
     paddingLeft: 20,
   },
- photoFrame: {
-    borderWidth: 0, 
-    borderRadius: 10, 
-    padding: 3, 
+  photoFrame: {
+    borderWidth: 0,
+    borderRadius: 10,
+    padding: 3,
     marginRight: 10,
-    elevation: 0, 
-    shadowColor: 'transparent', 
-    shadowOffset: { width: 0, height: 0 }, 
-    shadowOpacity: 0, 
-    shadowRadius: 0, 
-    height: 200, 
-    minWidth: 100, 
+    height: 200,
+    minWidth: 100,
   },
   photo: {
     width: 150,
@@ -226,6 +235,23 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     flex: 1,
     justifyContent: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalImage: {
+    width: '90%',
+    height: '70%',
+    resizeMode: 'contain',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    zIndex: 10,
   },
 });
 
